@@ -39,7 +39,21 @@ export default function NodeGraphCanvas() {
   const [drag, setDrag] = useState<DragState | null>(null);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [wireEnd, setWireEnd] = useState<{ x: number; y: number } | null>(null);
-  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; nodeId?: string } | null>(null);
+
+  // Delete selected node with Delete/Backspace key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.key === 'Delete' || e.key === 'Backspace') && state.selectedNodeId) {
+        const node = state.nodes.find(n => n.id === state.selectedNodeId);
+        if (node && node.type !== 'output-render') {
+          removeNode(state.selectedNodeId);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [state.selectedNodeId, state.nodes, removeNode]);
 
   const handleMouseDown = useCallback((e: React.MouseEvent, nodeId?: string, portId?: string) => {
     e.stopPropagation();
