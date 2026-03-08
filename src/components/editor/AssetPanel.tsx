@@ -55,11 +55,6 @@ export default function AssetPanel() {
         { type: 'fluid-sim', label: 'Fluid', icon: <Droplets size={12} /> },
       ],
     },
-    {
-      category: 'Output',
-      items: [
-        { type: 'output-render', label: 'Render', icon: <Flame size={12} /> },
-      ],
     },
   ];
 
