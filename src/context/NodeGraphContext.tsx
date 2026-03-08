@@ -246,6 +246,7 @@ export function NodeGraphProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useNodeGraph() {
   const ctx = useContext(NodeGraphContext);
   if (!ctx) throw new Error('useNodeGraph must be used within NodeGraphProvider');
