@@ -39,7 +39,21 @@ export default function NodeGraphCanvas() {
   const [drag, setDrag] = useState<DragState | null>(null);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [wireEnd, setWireEnd] = useState<{ x: number; y: number } | null>(null);
-  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; nodeId?: string } | null>(null);
+
+  // Delete selected node with Delete/Backspace key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.key === 'Delete' || e.key === 'Backspace') && state.selectedNodeId) {
+        const node = state.nodes.find(n => n.id === state.selectedNodeId);
+        if (node && node.type !== 'output-render') {
+          removeNode(state.selectedNodeId);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [state.selectedNodeId, state.nodes, removeNode]);
 
   const handleMouseDown = useCallback((e: React.MouseEvent, nodeId?: string, portId?: string) => {
     e.stopPropagation();
@@ -127,11 +141,12 @@ export default function NodeGraphCanvas() {
     setWireEnd(null);
   }, [drag, state.nodes, addConnection, pan]);
 
-  const handleContextMenu = useCallback((e: React.MouseEvent) => {
+  const handleContextMenu = useCallback((e: React.MouseEvent, nodeId?: string) => {
     e.preventDefault();
+    e.stopPropagation();
     const rect = canvasRef.current?.getBoundingClientRect();
     if (rect) {
-      setContextMenu({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+      setContextMenu({ x: e.clientX - rect.left, y: e.clientY - rect.top, nodeId });
     }
   }, []);
 
@@ -161,9 +176,6 @@ export default function NodeGraphCanvas() {
       { type: 'modifier-blur', label: 'Blur' },
       { type: 'modifier-dissolve', label: 'Dissolve' },
       { type: 'modifier-color-remap', label: 'Color Remap' },
-    ]},
-    { label: 'Output', items: [
-      { type: 'output-render', label: 'Final Render' },
     ]},
   ];
 
@@ -243,6 +255,7 @@ export default function NodeGraphCanvas() {
               background: 'hsl(220, 15%, 12%)',
             }}
             onMouseDown={(e) => handleMouseDown(e, node.id)}
+            onContextMenu={(e) => handleContextMenu(e, node.id)}
           >
             {/* Header */}
             <div
@@ -296,28 +309,58 @@ export default function NodeGraphCanvas() {
           className="absolute rounded-md border border-border bg-card shadow-xl z-50 py-1 min-w-[180px]"
           style={{ left: contextMenu.x, top: contextMenu.y }}
         >
-          <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-            Add Node
-          </div>
-          {nodeTypes.map(group => (
-            <div key={group.label}>
-              <div className="px-3 py-0.5 text-[10px] text-muted-foreground mt-1">{group.label}</div>
-              {group.items.map(item => (
-                <button
-                  key={item.type}
-                  className="w-full text-left px-3 py-1 text-xs hover:bg-accent transition-colors text-foreground"
-                  onClick={() => handleAddNode(item.type)}
-                >
-                  {item.label}
-                </button>
+          {contextMenu.nodeId ? (
+            <>
+              {(() => {
+                const node = state.nodes.find(n => n.id === contextMenu.nodeId);
+                const isOutputRender = node?.type === 'output-render';
+                return (
+                  <>
+                    <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                      {node?.label}
+                    </div>
+                    <button
+                      className={`w-full text-left px-3 py-1 text-xs transition-colors ${isOutputRender ? 'text-muted-foreground/40 cursor-not-allowed' : 'text-destructive hover:bg-accent'}`}
+                      onClick={() => {
+                        if (!isOutputRender && contextMenu.nodeId) {
+                          removeNode(contextMenu.nodeId);
+                        }
+                        setContextMenu(null);
+                      }}
+                      disabled={isOutputRender}
+                    >
+                      {isOutputRender ? 'Cannot delete' : 'Delete Node'}
+                    </button>
+                  </>
+                );
+              })()}
+            </>
+          ) : (
+            <>
+              <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Add Node
+              </div>
+              {nodeTypes.map(group => (
+                <div key={group.label}>
+                  <div className="px-3 py-0.5 text-[10px] text-muted-foreground mt-1">{group.label}</div>
+                  {group.items.map(item => (
+                    <button
+                      key={item.type}
+                      className="w-full text-left px-3 py-1 text-xs hover:bg-accent transition-colors text-foreground"
+                      onClick={() => handleAddNode(item.type)}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
               ))}
-            </div>
-          ))}
+            </>
+          )}
         </div>
       )}
 
       {/* Instructions overlay */}
-      {state.nodes.length === 0 && (
+      {state.nodes.length <= 1 && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="text-center text-muted-foreground">
             <p className="text-sm font-medium">Right-click to add nodes</p>
