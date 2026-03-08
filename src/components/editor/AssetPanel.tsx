@@ -29,9 +29,7 @@ export default function AssetPanel() {
   const [tab, setTab] = useState<'presets' | 'nodes'>('presets');
 
   const handlePreset = (preset: typeof PRESETS[0]) => {
-    // Add output node first
-    addNode('output-render', { x: 400, y: 100 });
-    // Add preset nodes
+    // Add preset nodes only — Final Render node is persistent and already present
     preset.nodes.forEach((n, i) => {
       addNode(n.type, { x: 100, y: 80 + i * 100 });
     });
@@ -55,12 +53,6 @@ export default function AssetPanel() {
       items: [
         { type: 'particle-emitter', label: 'Particles', icon: <Sparkles size={12} /> },
         { type: 'fluid-sim', label: 'Fluid', icon: <Droplets size={12} /> },
-      ],
-    },
-    {
-      category: 'Output',
-      items: [
-        { type: 'output-render', label: 'Render', icon: <Flame size={12} /> },
       ],
     },
   ];

@@ -50,6 +50,13 @@ function pushHistory(state: FullState): HistoryEntry[] {
 function reducer(state: FullState, action: Action): FullState {
   switch (action.type) {
     case 'ADD_NODE': {
+      // Ensure there is only ever one output-render node
+      if (
+        action.payload.type === 'output-render' &&
+        state.graph.nodes.some(n => n.type === 'output-render')
+      ) {
+        return state;
+      }
       const history = pushHistory(state);
       return {
         graph: { ...state.graph, nodes: [...state.graph.nodes, action.payload] },
