@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; // force rebuild
 import { NodeGraphProvider, useNodeGraph } from '@/context/NodeGraphContext';
 import NodeGraphCanvas from '@/components/editor/NodeGraphCanvas';
 import PreviewCanvas from '@/components/editor/PreviewCanvas';
