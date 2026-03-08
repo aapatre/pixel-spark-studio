@@ -1,8 +1,12 @@
-# Welcome to your Lovable project
+# PixelVFX Studio
+
+A browser-based, Houdini-inspired node graph editor for creating pixel art VFX — fluid simulations, particle effects, and more with a fully non-destructive workflow.
+
+**Live App**: https://pixel-vfx-lab.lovable.app
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+**URL**: https://lovable.dev/projects/e99ccd49-22b2-4a59-952b-2a81c8271528
 
 ## How can I edit this code?
 
