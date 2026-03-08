@@ -255,6 +255,7 @@ export default function NodeGraphCanvas() {
               background: 'hsl(220, 15%, 12%)',
             }}
             onMouseDown={(e) => handleMouseDown(e, node.id)}
+            onContextMenu={(e) => handleContextMenu(e, node.id)}
           >
             {/* Header */}
             <div
