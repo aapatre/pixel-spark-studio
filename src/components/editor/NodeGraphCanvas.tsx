@@ -141,11 +141,12 @@ export default function NodeGraphCanvas() {
     setWireEnd(null);
   }, [drag, state.nodes, addConnection, pan]);
 
-  const handleContextMenu = useCallback((e: React.MouseEvent) => {
+  const handleContextMenu = useCallback((e: React.MouseEvent, nodeId?: string) => {
     e.preventDefault();
+    e.stopPropagation();
     const rect = canvasRef.current?.getBoundingClientRect();
     if (rect) {
-      setContextMenu({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+      setContextMenu({ x: e.clientX - rect.left, y: e.clientY - rect.top, nodeId });
     }
   }, []);
 
