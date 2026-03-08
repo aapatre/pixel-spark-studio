@@ -29,9 +29,7 @@ export default function AssetPanel() {
   const [tab, setTab] = useState<'presets' | 'nodes'>('presets');
 
   const handlePreset = (preset: typeof PRESETS[0]) => {
-    // Add output node first
-    addNode('output-render', { x: 400, y: 100 });
-    // Add preset nodes
+    // Add preset nodes only — Final Render node is persistent and already present
     preset.nodes.forEach((n, i) => {
       addNode(n.type, { x: 100, y: 80 + i * 100 });
     });
