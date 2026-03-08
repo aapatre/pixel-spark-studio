@@ -170,9 +170,19 @@ function reducer(state: FullState, action: Action): FullState {
   }
 }
 
+const defaultOutputNode: NodeData = {
+  id: 'output-render-default',
+  type: 'output-render',
+  category: 'output',
+  label: 'Final Render',
+  position: { x: 600, y: 100 },
+  ports: [{ id: 'output-render-default_in', name: 'Input', type: 'input', dataType: 'any' }],
+  params: { width: 64, height: 64, fps: 12, duration: 60 },
+};
+
 const initialState: FullState = {
-  graph: { nodes: [], connections: [], selectedNodeId: null },
-  history: [{ nodes: [], connections: [] }],
+  graph: { nodes: [defaultOutputNode], connections: [], selectedNodeId: null },
+  history: [{ nodes: [defaultOutputNode], connections: [] }],
   historyIndex: 0,
 };
 
