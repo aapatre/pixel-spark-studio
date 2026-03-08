@@ -55,7 +55,6 @@ export default function AssetPanel() {
         { type: 'fluid-sim', label: 'Fluid', icon: <Droplets size={12} /> },
       ],
     },
-    },
   ];
 
   return (
