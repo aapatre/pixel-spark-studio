@@ -177,9 +177,6 @@ export default function NodeGraphCanvas() {
       { type: 'modifier-dissolve', label: 'Dissolve' },
       { type: 'modifier-color-remap', label: 'Color Remap' },
     ]},
-    { label: 'Output', items: [
-      { type: 'output-render', label: 'Final Render' },
-    ]},
   ];
 
   return (
