@@ -360,7 +360,7 @@ export default function NodeGraphCanvas() {
       )}
 
       {/* Instructions overlay */}
-      {state.nodes.length === 0 && (
+      {state.nodes.length <= 1 && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="text-center text-muted-foreground">
             <p className="text-sm font-medium">Right-click to add nodes</p>

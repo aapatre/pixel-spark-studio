@@ -58,6 +58,9 @@ function reducer(state: FullState, action: Action): FullState {
       };
     }
     case 'REMOVE_NODE': {
+      // Prevent deletion of the default output-render node
+      const nodeToRemove = state.graph.nodes.find(n => n.id === action.payload);
+      if (nodeToRemove?.type === 'output-render') return state;
       const history = pushHistory(state);
       return {
         graph: {
